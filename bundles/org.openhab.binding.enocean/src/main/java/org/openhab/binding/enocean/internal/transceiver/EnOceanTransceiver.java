@@ -198,7 +198,7 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
                 }
             });
         }
-        logger.info("EnOceanSerialTransceiver RX thread started");
+        logger.info("EnOceanSerialTransceiver RX thread started {}", path);
     }
 
     public void ShutDown() {
