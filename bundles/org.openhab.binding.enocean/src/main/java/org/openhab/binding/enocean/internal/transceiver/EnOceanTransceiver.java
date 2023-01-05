@@ -186,7 +186,7 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
         inputStream = serialPort.getInputStream();
         outputStream = serialPort.getOutputStream();
 
-        logger.info("EnOceanSerialTransceiver initialized");
+        logger.info("EnOceanSerialTransceiver initialized {}", path);
     }
 
     public void StartReceiving(ScheduledExecutorService scheduler) {
