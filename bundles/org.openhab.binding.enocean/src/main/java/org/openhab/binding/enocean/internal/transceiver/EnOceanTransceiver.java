@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Queue;
 import java.util.TooManyListenersException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -52,8 +53,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class EnOceanTransceiver implements SerialPortEventListener {
 
-    public static final int ENOCEAN_MAX_DATA = 65790;
-
+    public static final int ENOCEAN_MAX_DATA = 5000;
+    public int i = 0;
     // Thread management
     protected Future<?> readingTask = null;
     private Future<?> timeOut = null;
@@ -61,8 +62,10 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
     protected Logger logger = LoggerFactory.getLogger(EnOceanTransceiver.class);
 
     private SerialPortManager serialPortManager;
-    private static final int ENOCEAN_DEFAULT_BAUD = 57600;
+    // private static final int ENOCEAN_DEFAULT_BAUD = 57600;
+    private int ENOCEAN_DEFAULT_BAUD = 57600;
     protected String path;
+    protected String baud;
     SerialPort serialPort;
 
     class Request {
@@ -73,8 +76,10 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
     }
 
     private class RequestQueue {
+
         private Queue<Request> queue = new LinkedBlockingQueue<>();
-        private ScheduledExecutorService scheduler;
+        // ScheduledExecutorService schedulerTP = Executors.newScheduledThreadPool(1);
+        private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         public RequestQueue(ScheduledExecutorService scheduler) {
             this.scheduler = scheduler;
@@ -112,8 +117,10 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
                             logger.trace("Sending raw data: {}", HexUtils.bytesToHex(b));
                             outputStream.write(b);
                             outputStream.flush();
+                            // queue.poll();
 
                             if (timeOut != null) {
+                                // logger.info("Cancel TC Buffer timer");
                                 timeOut.cancel(true);
                             }
 
@@ -121,12 +128,16 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
                             // Todo tweak sending intervall (250 ist just a first try)
                             timeOut = scheduler.schedule(() -> {
                                 try {
+                                    // logger.info("Buffer schedule: massage = {} fro serial = {}",
+                                    // HexUtils.bytesToHex(b),
+                                    // path);
                                     sendNext();
                                 } catch (IOException e) {
                                     errorListener.ErrorOccured(e);
                                     return;
                                 }
-                            }, 250, TimeUnit.MILLISECONDS);
+                            }, 350, TimeUnit.MILLISECONDS);
+
                         }
                     } else {
                         sendNext();
@@ -151,8 +162,8 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
     private byte[] filteredDeviceId;
     TransceiverErrorListener errorListener;
 
-    public EnOceanTransceiver(String path, TransceiverErrorListener errorListener, ScheduledExecutorService scheduler,
-            SerialPortManager serialPortManager) {
+    public EnOceanTransceiver(String path, String baud, TransceiverErrorListener errorListener,
+            ScheduledExecutorService scheduler, SerialPortManager serialPortManager) {
         requestQueue = new RequestQueue(scheduler);
 
         listeners = new HashMap<>();
@@ -162,6 +173,7 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
         this.errorListener = errorListener;
         this.serialPortManager = serialPortManager;
         this.path = path;
+        this.baud = baud;
     }
 
     public void Initialize()
@@ -170,6 +182,9 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
         if (id == null) {
             throw new IOException("Could not find a gateway on given path '" + path + "', "
                     + serialPortManager.getIdentifiers().count() + " ports available.");
+        }
+        if (baud == "9600") {
+            ENOCEAN_DEFAULT_BAUD = 9600;
         }
 
         serialPort = id.open(EnOceanBindingConstants.BINDING_ID, 1000);
@@ -186,30 +201,51 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
         inputStream = serialPort.getInputStream();
         outputStream = serialPort.getOutputStream();
 
-        logger.info("EnOceanSerialTransceiver initialized {}", path);
+        logger.info("EnOceanSerialTransceiver initialized with baud rate {} and port {}", ENOCEAN_DEFAULT_BAUD, path);
     }
 
-    public void StartReceiving(ScheduledExecutorService scheduler) {
+    public void StartReceiving() {
+        ScheduledExecutorService schedulerTP = Executors.newScheduledThreadPool(1);
+
         if (readingTask == null || readingTask.isCancelled()) {
-            readingTask = scheduler.submit(new Runnable() {
-                @Override
-                public void run() {
+
+            readingTask = schedulerTP.schedule(() -> {
+                try {
                     receivePackets();
+                } catch (Exception e) {
+                    logger.info("Errooorrrrrrr  {}", e);
+                    // e.printStackTrace();
                 }
-            });
+            }, 5, TimeUnit.MILLISECONDS);
         }
-        logger.info("EnOceanSerialTransceiver RX thread started {}", path);
+        /*
+         * if (readingTask == null || readingTask.isCancelled()) {
+         * readingTask = scheduler.schedule(() -> {
+         * try {
+         * receivePackets();
+         * } catch (Exception e) {
+         * logger.info("Errooorrrrrrr  {}", e);
+         * // e.printStackTrace();
+         * }
+         * }, 50, TimeUnit.MILLISECONDS);
+         *
+         * }
+         */
+
+        // logger.info("EnOceanSerialTransceiver RX thread started");
     }
 
     public void ShutDown() {
         logger.debug("shutting down transceiver");
         logger.debug("Interrupt rx Thread");
-
-        if (timeOut != null) {
-            timeOut.cancel(true);
-        }
+        /*
+         * if (timeOut != null) {
+         * timeOut.cancel(true);
+         * }
+         */
 
         if (readingTask != null) {
+            // readingTask.shutdown();
             readingTask.cancel(true);
             try {
                 inputStream.close();
@@ -218,7 +254,7 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
         }
 
         readingTask = null;
-        timeOut = null;
+        // timeOut = null;
         listeners.clear();
         eventListeners.clear();
         teachInListener = null;
@@ -254,6 +290,7 @@ public abstract class EnOceanTransceiver implements SerialPortEventListener {
     }
 
     private void receivePackets() {
+        // logger.info("***receivePackets {} from {}", readingTask, path);
         byte[] buffer = new byte[1];
 
         while (readingTask != null && !readingTask.isCancelled()) {

@@ -14,20 +14,9 @@ package org.openhab.binding.enocean.internal.config;
 
 /**
  *
- * @author Daniel Weber - Initial contribution
+ * @author Theo tn.pieri@gmail.com - Initial contribution
  */
-public class EnOceanActuatorConfig extends EnOceanBaseConfig {
+public class EnOceanChannelRoomOperatingPanel {
 
-    public int channel;
-    public Integer senderIdOffset = null;
-    public String manufacturerId;
-    public String Type;
-
-    public String sendingEEPId;
-
-    public int pollingInterval;
-
-    public boolean broadcastMessages;
-
-    public boolean suppressRepeating;
+    public boolean eltakoresetGfvs = true;
 }

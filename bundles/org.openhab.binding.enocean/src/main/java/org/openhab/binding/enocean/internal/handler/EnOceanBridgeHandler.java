@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.openhab.binding.enocean.internal.EnOceanConfigStatusMessage;
@@ -165,16 +164,20 @@ public class EnOceanBridgeHandler extends ConfigStatusBridgeHandler implements T
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                     "SerialPortManager could not be found");
         } else {
-            if (connectorTask == null || connectorTask.isDone()) {
-                connectorTask = scheduler.scheduleWithFixedDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (thing.getStatus() != ThingStatus.ONLINE) {
-                            initTransceiver();
-                        }
-                    }
-                }, 0, 60, TimeUnit.SECONDS);
-            }
+            initTransceiver();
+            /*
+             * if (connectorTask == null || connectorTask.isDone()) {
+             * connectorTask = scheduler.scheduleWithFixedDelay(new Runnable() {
+             *
+             * @Override
+             * public void run() {
+             * if (thing.getStatus() != ThingStatus.ONLINE) {
+             * initTransceiver();
+             * }
+             * }
+             * }, 0, 60, TimeUnit.SECONDS);
+             * }
+             */
         }
     }
 
@@ -187,12 +190,12 @@ public class EnOceanBridgeHandler extends ConfigStatusBridgeHandler implements T
 
             switch (c.getESPVersion()) {
                 case ESP2:
-                    transceiver = new EnOceanESP2Transceiver(c.path, this, scheduler, serialPortManager);
+                    transceiver = new EnOceanESP2Transceiver(c.path, c.baud, this, scheduler, serialPortManager);
                     smackAvailable = false;
                     sendTeachOuts = false;
                     break;
                 case ESP3:
-                    transceiver = new EnOceanESP3Transceiver(c.path, this, scheduler, serialPortManager);
+                    transceiver = new EnOceanESP3Transceiver(c.path, c.baud, this, scheduler, serialPortManager);
                     sendTeachOuts = c.sendTeachOuts;
                     break;
                 default:
@@ -201,10 +204,11 @@ public class EnOceanBridgeHandler extends ConfigStatusBridgeHandler implements T
 
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_PENDING, "opening serial port...");
             transceiver.Initialize();
-
+            // logger.info("EnOceanSerialTransceiver {}", c.rs485BaseId);
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_PENDING, "starting rx thread...");
-            transceiver.StartReceiving(scheduler);
-            logger.info("EnOceanSerialTransceiver RX thread up and running");
+
+            transceiver.StartReceiving();
+            // logger.info("EnOceanSerialTransceiver RX thread up and running");
 
             if (c.rs485) {
                 if (c.rs485BaseId != null && !c.rs485BaseId.isEmpty()) {
@@ -311,11 +315,21 @@ public class EnOceanBridgeHandler extends ConfigStatusBridgeHandler implements T
 
         // The serial port must be provided
         String path = getThing().getConfiguration().as(EnOceanBridgeConfig.class).path;
+        // String baud = getThing().getConfiguration().as(EnOceanBridgeConfig.class).baud;
         if (path == null || path.isEmpty()) {
             configStatusMessages.add(ConfigStatusMessage.Builder.error(PATH)
                     .withMessageKeySuffix(EnOceanConfigStatusMessage.PORT_MISSING.getMessageKey()).withArguments(PATH)
                     .build());
-        }
+        } /*
+           * else {
+           * if (baud == null || baud.isEmpty()) {
+           * configStatusMessages.add(ConfigStatusMessage.Builder.error(BAUD)
+           * .withMessageKeySuffix(EnOceanConfigStatusMessage.BAUD_MISSING.getMessageKey())
+           * .withArguments(BAUD).build());
+           * }
+           *
+           * }
+           */
 
         return configStatusMessages;
     }

@@ -33,6 +33,10 @@ import org.openhab.core.types.UnDefType;
  */
 public abstract class A5_10 extends _4BSMessage {
 
+    public A5_10() {
+        super();
+    }
+
     public A5_10(ERP1Message packet) {
         super(packet);
     }

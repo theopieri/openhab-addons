@@ -108,6 +108,13 @@
 		<label>Set Point</label>
 		<description>linear set point</description>
 		<state readOnly="true" min="0" max="255"/>
+		<config-description>
+			<parameter name="eltakoresetGfvs" type="boolean">
+				<label>eltako reset Gfvs</label>
+				<description>True for Eltako Thermostat, false otherwise. Defaults to true for compatibility purpose.</description>
+				<default>true</default>
+			</parameter>
+		</config-description>
 	</channel-type>
 
 	<channel-type id="fanSpeedStage">

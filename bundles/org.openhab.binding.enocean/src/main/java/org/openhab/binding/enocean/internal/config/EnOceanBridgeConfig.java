@@ -42,6 +42,8 @@ public class EnOceanBridgeConfig {
 
     public String path;
 
+    public String baud;
+
     public String espVersion;
     public boolean rs485;
     public String rs485BaseId;

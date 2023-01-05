@@ -59,12 +59,15 @@ import org.openhab.binding.enocean.internal.eep.A5_08.A5_08_01;
 import org.openhab.binding.enocean.internal.eep.A5_08.A5_08_01_FXBH;
 import org.openhab.binding.enocean.internal.eep.A5_08.A5_08_02;
 import org.openhab.binding.enocean.internal.eep.A5_08.A5_08_03;
+import org.openhab.binding.enocean.internal.eep.A5_09.A5_09_01;
+import org.openhab.binding.enocean.internal.eep.A5_09.A5_09_04;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_01;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_02;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_03;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_04;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_05;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_06;
+import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_06_ELTAKO;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_07;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_08;
 import org.openhab.binding.enocean.internal.eep.A5_10.A5_10_09;
@@ -294,6 +297,11 @@ public enum EEPType {
     FXBH_A5_08_01(RORG._4BS, 0x08, 0x01, false, "FXBH", ELTAKOID, A5_08_01_FXBH.class,
             THING_TYPE_LIGHTTEMPERATUREOCCUPANCYSENSOR, CHANNEL_MOTIONDETECTION, CHANNEL_ILLUMINATION),
 
+    TemperatureHumidityCO2Sensor_A5_09_01(RORG._4BS, 0x09, 0x01, false, A5_09_01.class,
+            THING_TYPE_TEMPERATURECO2HUMSENSOR, CHANNEL_TEMPERATURE, CHANNEL_HUMIDITY, CHANNEL_AIRQUALITYVALUE1),
+    TemperatureHumidityCO2Sensor_A5_09_04(RORG._4BS, 0x09, 0x04, false, A5_09_04.class,
+            THING_TYPE_TEMPERATURECO2HUMSENSOR, CHANNEL_TEMPERATURE, CHANNEL_HUMIDITY, CHANNEL_AIRQUALITYVALUE1),
+
     LightSensor01(RORG._4BS, 0x06, 0x01, false, A5_06_01.class, THING_TYPE_LIGHTSENSOR, CHANNEL_ILLUMINATION),
     LightSensor02(RORG._4BS, 0x06, 0x01, false, "ELTAKO", ELTAKOID, A5_06_01_ELTAKO.class, THING_TYPE_LIGHTSENSOR,
             CHANNEL_ILLUMINATION),
@@ -309,7 +317,12 @@ public enum EEPType {
     RoomPanel_A5_10_05(RORG._4BS, 0x10, 0x05, false, A5_10_05.class, THING_TYPE_ROOMOPERATINGPANEL, CHANNEL_TEMPERATURE,
             CHANNEL_SETPOINT, CHANNEL_OCCUPANCY),
     RoomPanel_A5_10_06(RORG._4BS, 0x10, 0x06, false, A5_10_06.class, THING_TYPE_ROOMOPERATINGPANEL, CHANNEL_TEMPERATURE,
-            CHANNEL_SETPOINT),
+            CHANNEL_SETPOINT, CHANNEL_DISPLAY_ORIENTATION, CHANNEL_BUTTON_LOCK, CHANNEL_TEACHINCMD),
+
+    RoomPanel_A5_10_06_ELTAKO(RORG._4BS, 0x10, 0x06, false, "ELTAKO", ELTAKOID, A5_10_06_ELTAKO.class,
+            THING_TYPE_ROOMOPERATINGPANEL, CHANNEL_TEMPERATURE, CHANNEL_SETPOINT, CHANNEL_DISPLAY_ORIENTATION,
+            CHANNEL_BUTTON_LOCK, CHANNEL_TEACHINCMD),
+
     RoomPanel_A5_10_07(RORG._4BS, 0x10, 0x07, false, A5_10_07.class, THING_TYPE_ROOMOPERATINGPANEL, CHANNEL_TEMPERATURE,
             CHANNEL_FANSPEEDSTAGE),
     RoomPanel_A5_10_08(RORG._4BS, 0x10, 0x08, false, A5_10_08.class, THING_TYPE_ROOMOPERATINGPANEL, CHANNEL_TEMPERATURE,
@@ -725,6 +738,7 @@ public enum EEPType {
     }
 
     public static EEPType getType(String receivingEEPId) {
+
         for (EEPType eep : values()) {
             if (eep.getId().equals(receivingEEPId)) {
                 return eep;

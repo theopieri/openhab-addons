@@ -18,6 +18,7 @@ package org.openhab.binding.enocean.internal;
  */
 public enum EnOceanConfigStatusMessage {
     PORT_MISSING("missing-port-configuration"),
+    BAUD_MISSING("missing-baud-configuration"),
     SENDERID_MISSING("missing-senderId-configuration"),
     SENDERID_MALFORMED("malformed-senderId-configuration");
 

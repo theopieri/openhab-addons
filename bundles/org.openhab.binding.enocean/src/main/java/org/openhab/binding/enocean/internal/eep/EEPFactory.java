@@ -227,7 +227,7 @@ public class EEPFactory {
         byte[] senderId = Arrays.copyOfRange(payload, 12, 12 + 4);
 
         logger.debug("Received SMACK Teach In with EEP {}-{}-{} and manufacturerID {}",
-                HexUtils.bytesToHex(new byte[] { (byte) rorg }), HexUtils.bytesToHex(new byte[] { (byte) func }),
+                HexUtils.bytesToHex(new byte[] { rorg }), HexUtils.bytesToHex(new byte[] { (byte) func }),
                 HexUtils.bytesToHex(new byte[] { (byte) type }), HexUtils.bytesToHex(new byte[] { (byte) manufId }));
 
         EEPType eepType = EEPType.getType(RORG.getRORG(rorg), func, type, manufId);

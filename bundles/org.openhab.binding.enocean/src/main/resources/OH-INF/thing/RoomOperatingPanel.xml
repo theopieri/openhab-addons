@@ -17,6 +17,22 @@
 				<label>EnOceanId</label>
 				<description>EnOceanId of device this thing belongs to</description>
 			</parameter>
+			<parameter name="senderIdOffset" type="integer" min="1" max="127">
+				<label>Sender Id</label>
+				<description>Id is used to generate the EnOcean Id (Int between [1-127]). If not specified the next free Id will be
+					determined by bridge</description>
+			</parameter>
+			<parameter name="sendingEEPId" type="text" required="true">
+				<label>EEP for Sending Commands</label>
+				<options>
+					<option value="A5_10_06_ELTAKO">A5-10-06 temperature sensor, set point ELTAKO</option>
+				</options>
+				<limitToOptions>true</limitToOptions>
+			</parameter>
+			<parameter name="broadcastMessages" type="boolean">
+				<label>Send Broadcast Messages</label>
+				<default>true</default>
+			</parameter>
 			<parameter name="receivingEEPId" type="text" required="true">
 				<label>EEP</label>
 				<description>EEP which is used by panel</description>
@@ -27,6 +43,7 @@
 					<option value="A5_10_04">A5-10-04 temperature sensor, set point and fan speed control</option>
 					<option value="A5_10_05">A5-10-05 temperature sensor, set point and occupancy control</option>
 					<option value="A5_10_06">A5-10-06 temperature sensor, set point and day/night control</option>
+					<option value="A5_10_06_ELTAKO">A5-10-06 temperature sensor, set point ELTAKO</option>
 					<option value="A5_10_07">A5-10-07 temperature sensor, fan speed control</option>
 					<option value="A5_10_08">A5-10-08 temperature sensor, fan speed and occupancy control</option>
 					<option value="A5_10_09">A5-10-09 temperature sensor, fan speed and day/night control</option>

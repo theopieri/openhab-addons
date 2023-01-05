@@ -67,6 +67,8 @@ public class EnOceanBindingConstants {
     public static final ThingTypeUID THING_TYPE_OCCUPANCYSENSOR = new ThingTypeUID(BINDING_ID, "occupancySensor");
     public static final ThingTypeUID THING_TYPE_LIGHTTEMPERATUREOCCUPANCYSENSOR = new ThingTypeUID(BINDING_ID,
             "lightTemperatureOccupancySensor");
+    public static final ThingTypeUID THING_TYPE_TEMPERATURECO2HUMSENSOR = new ThingTypeUID(BINDING_ID,
+            "temperatureCO2HumSensor");
     public static final ThingTypeUID THING_TYPE_LIGHTSENSOR = new ThingTypeUID(BINDING_ID, "lightSensor");
     public static final ThingTypeUID THING_TYPE_ENVIRONMENTALSENSOR = new ThingTypeUID(BINDING_ID,
             "environmentalSensor");
@@ -84,9 +86,9 @@ public class EnOceanBindingConstants {
             THING_TYPE_ROCKERSWITCH, THING_TYPE_CLASSICDEVICE, THING_TYPE_CENTRALCOMMAND, THING_TYPE_ROOMOPERATINGPANEL,
             THING_TYPE_MECHANICALHANDLE, THING_TYPE_CONTACT, THING_TYPE_MEASUREMENTSWITCH, THING_TYPE_TEMPERATURESENSOR,
             THING_TYPE_TEMPERATUREHUMIDITYSENSOR, THING_TYPE_GENERICTHING, THING_TYPE_ROLLERSHUTTER,
-            THING_TYPE_OCCUPANCYSENSOR, THING_TYPE_LIGHTTEMPERATUREOCCUPANCYSENSOR, THING_TYPE_LIGHTSENSOR,
-            THING_TYPE_ENVIRONMENTALSENSOR, THING_TYPE_AUTOMATEDMETERSENSOR, THING_TYPE_THERMOSTAT,
-            THING_TYPE_MULTFUNCTIONSMOKEDETECTOR, THING_TYPE_HEATRECOVERYVENTILATION,
+            THING_TYPE_OCCUPANCYSENSOR, THING_TYPE_LIGHTTEMPERATUREOCCUPANCYSENSOR, THING_TYPE_TEMPERATURECO2HUMSENSOR,
+            THING_TYPE_LIGHTSENSOR, THING_TYPE_ENVIRONMENTALSENSOR, THING_TYPE_AUTOMATEDMETERSENSOR,
+            THING_TYPE_THERMOSTAT, THING_TYPE_MULTFUNCTIONSMOKEDETECTOR, THING_TYPE_HEATRECOVERYVENTILATION,
             THING_TYPE_WINDOWSASHHANDLESENSOR);
 
     // List of all Channel Type Ids, these type ids are also used as channel ids during dynamic creation of channels
@@ -102,6 +104,7 @@ public class EnOceanBindingConstants {
     public static final String CHANNEL_ROLLERSHUTTER = "rollershutter";
     public static final String CHANNEL_ANGLE = "angle";
     public static final String CHANNEL_TEMPERATURE = "temperature";
+    public static final String CHANNEL_CO2 = "co2";
     public static final String CHANNEL_HUMIDITY = "humidity";
     public static final String CHANNEL_SETPOINT = "setPoint";
     public static final String CHANNEL_FANSPEEDSTAGE = "fanSpeedStage";
@@ -151,6 +154,7 @@ public class EnOceanBindingConstants {
     public static final String CHANNEL_WINDOWBREACHEVENT = "windowBreachEvent";
     public static final String CHANNEL_PROTECTIONPLUSEVENT = "protectionPlusEvent";
     public static final String CHANNEL_VACATIONMODETOGGLEEVENT = "vacationModeToggleEvent";
+    public static final String CHANNEL_MODEHEAT = "modeHeat";
     public static final String CHANNEL_CONTACT = "contact";
     public static final String CHANNEL_TEACHINCMD = "teachInCMD";
     public static final String CHANNEL_INSTANTPOWER = "instantpower";
@@ -227,7 +231,6 @@ public class EnOceanBindingConstants {
             Map.entry(CHANNEL_GENERAL_SWITCHINGB,
                     new EnOceanChannelDescription(new ChannelTypeUID(BINDING_ID, CHANNEL_GENERAL_SWITCHINGB),
                             CoreItemFactory.SWITCH)),
-
             Map.entry(CHANNEL_DIMMER,
                     new EnOceanChannelDescription(new ChannelTypeUID(BINDING_ID, CHANNEL_DIMMER),
                             CoreItemFactory.DIMMER)),
@@ -334,6 +337,9 @@ public class EnOceanBindingConstants {
             Map.entry(CHANNEL_VACATIONMODETOGGLEEVENT,
                     new EnOceanChannelDescription(new ChannelTypeUID(BINDING_ID, CHANNEL_VACATIONMODETOGGLEEVENT), null,
                             null, false, true)),
+            Map.entry(CHANNEL_MODEHEAT,
+                    new EnOceanChannelDescription(new ChannelTypeUID(BINDING_ID, CHANNEL_MODEHEAT), null, null, false,
+                            true)),
             Map.entry(
                     CHANNEL_BATTERY_VOLTAGE,
                     new EnOceanChannelDescription(
@@ -572,6 +578,7 @@ public class EnOceanBindingConstants {
 
     // Bridge config properties
     public static final String PATH = "path";
+    public static final String BAUD = "baud";
     public static final String PARAMETER_NEXT_SENDERID = "nextSenderId";
 
     // Bridge properties

@@ -30,9 +30,9 @@ import org.openhab.core.util.HexUtils;
  */
 public class EnOceanESP3Transceiver extends EnOceanTransceiver {
 
-    public EnOceanESP3Transceiver(String path, TransceiverErrorListener errorListener,
+    public EnOceanESP3Transceiver(String path, String baud, TransceiverErrorListener errorListener,
             ScheduledExecutorService scheduler, SerialPortManager serialPortManager) {
-        super(path, errorListener, scheduler, serialPortManager);
+        super(path, baud, errorListener, scheduler, serialPortManager);
     }
 
     enum ReadingState {

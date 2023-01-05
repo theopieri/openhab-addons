@@ -19,6 +19,15 @@
 				<label>Path</label>
 				<description>Path to the EnOcean gateway</description>
 			</parameter>
+			<parameter name="baud" type="text" required="true">
+				<label>Baud</label>
+				<description>Baud rate to the EnOcean gateway</description>
+				<default>57600</default>
+				<options>
+					<option value="57600">57600</option>
+					<option value="9600">9600</option>
+				</options>
+			</parameter>
 			<parameter name="espVersion" type="text" required="true">
 				<advanced>true</advanced>
 				<label>ESP version of received and transmitting messages</label>
